@@ -1,5 +1,3 @@
-require 'csv'
-
 # Kasyfil Aziz Tri Cahyana <tricahyana@windowslive.com> <kasyfil.aziz@wgs.co.id> 2016
 #
 # require all file below in yours Ruby on Rails Application
@@ -125,6 +123,9 @@ require 'csv'
 #     ... your code ...
 #   end
 #
+
+require 'csv'
+
 class ImportCSV
   # preload data
   attr_accessor :preload
@@ -343,9 +344,9 @@ class ImportCSV
   # Example :
   #   csv = ImportCSV.new(Rails.root.join('db/seeds/development/tx_locations.csv'), header: true)
   #   csv.next
-  #   p csv.location_id ~> `return first line from file`
+  #   p csv.location_id => `return first line`
   #   csv.next
-  #   p csv.location_id ~> `return second line from file`
+  #   p csv.location_id => `return second line`
   #
   # Example using while :
   #   csv = ImportCSV.new(Rails.root.join('db/seeds/development/tx_locations.csv'), header: true)
@@ -479,82 +480,81 @@ class ImportCSV
   #
   # Example:
   #   CSV data:
-  #    __________________________
+  #   ___________________________
   #   |id |  name    | birth     |
   #   |1  |  shania  | 27-06-1998|
   #   |2  |  jessica | 19-08-1993|
   #   |3  |  michelle| 28-10-1999|
   #   |___|__________|___________|
   #
-  #   Equal.
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: 'michelle')
-  #       ... use csv.each or while csv.next ...
-  #       ~> will return [3, 'michelle', '28-10-1999']
+  #   - Equal.
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: 'michelle')
+  #         ... use csv.each or while csv.next ...
+  #           => will return [3, 'michelle', '28-10-1999']
   #
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: ['shania', 'jessica'])
-  #       ... use csv.each or while csv.next ...
-  #       ~> will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: ['shania', 'jessica'])
+  #         ... use csv.each or while csv.next ...
+  #           => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
   #
-  #   Range. Only for Date, Integer and Float data type. Define datatype in
-  #   first range. Use `integer` for Integer & Float, use `date` for Date.
-  #   See Example below.
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(id: 1..2)
-  #       ... use csv.each or while csv.next ...
-  #       => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
+  #   - Range. Only for Date, Integer and Float data type. Define datatype in
+  #     first range. Use `integer` for Integer & Float, use `date` for Date.
+  #     See Example below.
+  #     * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(id: '(integer)1'..'2')
+  #         ... use csv.each or while csv.next ...
+  #         => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
   #
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(birth: '01-01-1993'.to_date..'01-01-1999'.to_date)
-  #       ... use csv.each or while csv.next ...
-  #       => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
+  #     * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(birth: '(date)01-01-1993'..'01-01-1999')
+  #         ... use csv.each or while csv.next ...
+  #          => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993'], [3, 'michelle', '28-10-1999']]
   #
-  #   Operator '>' & '<'. Only for column with data type Integer, Float or Date
-  #   Like `id` or `birth` in example csv data above.
+  #   - Operator '>' & '<'. Only for column with data type Integer, Float or Date
+  #     Like `id` or `birth` in example csv data above.
   #     - Data type must defined in filter, use `integer` for Integer or Float
   #       and use `date` for Date. Put operator & data type together without
   #       space. See example below.
-
   #     - For filter with Date data type (in csv or in filter), any value that
   #       can be parse using `Date.parse` are acceptable.
-  #
-  #         csv = ImportCSV.new('member.csv'), header: true)
+  #       * csv = ImportCSV.new('member.csv'), header: true)
   #         csv.where(id: '>(integer)1')
   #         ... use csv.each or while csv.next ...
-  #         => will return [[2, 'jessica', '19-08-1993'], [3, 'michelle', '28-10-1999']]
+  #         => will return [[2, 'jessica', '19-08-1993'], [1, 'michelle', '28-10-1999']]
   #
-  #         csv = ImportCSV.new('member.csv'), header: true)
+  #       * csv = ImportCSV.new('member.csv'), header: true)
   #         csv.where(birth: '<(date)01-01-1997')
   #         ... use csv.each or while csv.next ...
   #         => will return [2, 'jessica', '19-08-1993']
   #
-  #   Operator '!'. Put this operator in first character and folow with query
-  #   without space.
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: '!michelle')
-  #       ... use csv.each or while csv.next ...
-  #       => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
+  #   - Operator '!'. Put this operator in first character
+  #     and folow with query without space.
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: '!michelle')
+  #         ... use csv.each or while csv.next ...
+  #           => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
   #
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: ['!shania', '!jessica'])
-  #       ... use csv.each or while csv.next ...
-  #       => will return [3, 'michelle', '28-10-1999']
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: ['!shania', '!jessica'])
+  #         ... use csv.each or while csv.next ...
+  #           => will return [3, 'michelle', '28-10-1999']
   #
-  #   Operator '%'. `Like` Operator. Put this operator in first character and
-  #   folow with query without space.
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: '%jes')
-  #       ... use csv.each or while csv.next ...
-  #       => will return [2, 'jessica', '19-08-1993']
+  #   - Operator '%'. `Like` Operator. Put this operator in first character and
+  #     folow with query without space.
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: '%jes')
+  #         ... use csv.each or while csv.next ...
+  #           => will return [2, 'jessica', '19-08-1993']
   #
-  #     csv = ImportCSV.new('member.csv'), header: true)
-  #     csv.where(name: ['%jes', '%shan'])
-  #       ... use csv.each or while csv.next ...
-  #       => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
+  #       * csv = ImportCSV.new('member.csv'), header: true)
+  #         csv.where(name: ['%jes', '%shan'])
+  #         ... use csv.each or while csv.next ...
+  #           => will return [[1, 'shania', '27-06-1998'], [2, 'jessica', '19-08-1993']]
   #
   # Note :
-  #  - Data type must define if you use `<` or `>`.
+  #  - Data type must define if you use `<` or `>` or in Range. Don't define
+  #    data type in other operator.
   #
   def where(query = Hash.new)
     # if !self.has_header
@@ -611,12 +611,14 @@ class ImportCSV
             # if value is Range, (integer)1..2 or (date)01-01-2015..01-01-2016
             if values.kind_of?(Range)
               # scan for data type insert brackets.
+              # if values.first.scan(/\(([^\)]+)\)/)[0][0].downcase == "date"
               if values.first.kind_of?(Date) || values.first.kind_of?(Time)
                 # tmp_range_first = Date.parse(values.first[6..values.first.size])
                 tmp_range_first = values.first
                 tmp_range_last = values.last
                 # remove quote \" and `new line` from string
                 tmp_value = Date.parse(_row_tmp[self.get_header_index(key)].gsub(/\A"|"\Z/, '').gsub(row_sep, ''))
+              # elsif values.first.scan(/\(([^\)]+)\)/)[0][0].downcase == "integer"
               elsif values.first.kind_of?(Integer) || values.first.kind_of?(Float)
                 # value with type integer will convert to float
                 # tmp_range_first = (values.first[9..values.first.size]).to_f
